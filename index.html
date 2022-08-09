@@ -14,8 +14,11 @@
     // 2. 路由的核心， 我们要自己维护路径的切换，要维护跳转的状态， replace, push (状态信息：滚动条等)
     // 3. 可以注入监听方法，路径变化后，可以通知我们
 
-    function createCurrentLocation () {
+    function createCurrentLocation (bases = '') {
       let { pathname, search, hash } = location
+      if (bases.startsWith('#')) {
+        hash.slice(1) || '/'
+      }
       return pathname + search + hash
     }
 
@@ -29,16 +32,16 @@
       }
     }
 
-    function useHistoryStateNavigation () {
+    function useHistoryStateNavigation (bases) {
       const currentLocation = {
-        value: createCurrentLocation()// 字符串不变. 所以加个.value
+        value: createCurrentLocation(bases)// 字符串不变. 所以加个.value
       }
       const currentState = {
         value: history.state // 维护状态
       }
 
       function changeLocation (to, state, replaced) {
-        history[replaced ? 'replaceState' : 'pushState'](state, null, to)
+        history[replaced ? 'replaceState' : 'pushState'](state, null, bases + to)
         currentLocation.value = to
         currentState.value = state
       }
@@ -98,26 +101,42 @@
       }
     }
 
-    function createWebHistory () {
+    function createWebHistory (bases) {
       // 1. 实现维护路径和状态 
-      const historyNavigation = useHistoryStateNavigation()
+      const historyNavigation = useHistoryStateNavigation(bases)
       // const { location, state, push } = historyNavigation
       // 2. 监听前进后退事件
       const useHistoryListeners = useHistoryListener(historyNavigation.location, historyNavigation.state)
       // listen((to, from, state) => {
       //   console.log(to, from.state)
       // })
-      return {
+
+      const routerHistory = {
         ...historyNavigation,
         ...useHistoryListeners
       }
-      // historyNavigation.push('/abc', { a: 1 })
+      Object.defineProperty(routerHistory, 'location', { //代理location属性
+        get: function () {
+          return historyNavigation.location.value
+        }
+      })
+      Object.defineProperty(routerHistory, 'state', { // 代理state属性
+        get: function () {
+          return historyNavigation.state.value
+        }
+      })
+
+      return routerHistory
     }
-    const webHistory = createWebHistory()
+    const webHistory = createWebHashHistory()
     console.log(webHistory);
-    // setTimeout(() => {
-    //   push('/about')
-    // }, 2000);
+    setTimeout(() => {
+      webHistory.push('/about')
+    }, 2000);
+
+    function createWebHashHistory () {
+      return createWebHistory('#')
+    }
   </script>
 </body>
 
