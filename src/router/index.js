@@ -1,11 +1,34 @@
 import Home from '../views/home.vue'
 import About from '../views/About.vue'
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-
+import { h } from 'vue'
+import { createRouter, createWebHashHistory, createWebHistory } from '../vue-router'
+console.log(createWebHashHistory, createWebHistory)
 const routes = [
 	{
 		path: '/',
 		component: Home,
+		children: [
+			{
+				path: 'a',
+				// components: {
+				//   footer
+				//   home
+				// },
+				component: {
+					render() {
+						return h('div', 'a')
+					},
+				},
+			},
+			{
+				path: 'b',
+				component: {
+					render() {
+						return h('div', 'b')
+					},
+				},
+			},
+		],
 	},
 	{
 		path: '/about',
