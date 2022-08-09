@@ -43,7 +43,7 @@
         currentState.value = state
       }
 
-      if (!currentState.value) { // 发生跳转存入状态
+      if (!currentState.value) { // 发生跳转初始化存入状态
         changeLocation(currentLocation.value, buildState(null, currentLocation.value, null, true), true)
       }
       // console.log(currentLocation.value, currentState.value, history.state);
@@ -82,13 +82,42 @@
       }
     }
 
+    function useHistoryListener (currentLocation, currentState) {
+      let listens = []
+      function listen (callback) {
+        listens.push(callback)
+      }
+      window.addEventListener('popstate', ({ state }) => {
+        const from = currentLocation.value
+        currentLocation.value = createCurrentLocation()
+        currentState.value = state
+        listens.forEach(callback => callback(currentLocation.value, from, state))
+      })
+      return {
+        listen
+      }
+    }
+
     function createWebHistory () {
       // 1. 实现维护路径和状态 
       const historyNavigation = useHistoryStateNavigation()
-
-      historyNavigation.push('/abc', { a: 1 })
+      // const { location, state, push } = historyNavigation
+      // 2. 监听前进后退事件
+      const useHistoryListeners = useHistoryListener(historyNavigation.location, historyNavigation.state)
+      // listen((to, from, state) => {
+      //   console.log(to, from.state)
+      // })
+      return {
+        ...historyNavigation,
+        ...useHistoryListeners
+      }
+      // historyNavigation.push('/abc', { a: 1 })
     }
-    createWebHistory()
+    const webHistory = createWebHistory()
+    console.log(webHistory);
+    // setTimeout(() => {
+    //   push('/about')
+    // }, 2000);
   </script>
 </body>
 
