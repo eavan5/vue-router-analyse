@@ -1,4 +1,18 @@
+<!-- <script >
+export default {
+  name: 'App',
+  mounted () {
+    console.log(this.$route);
+    console.log(this.$router);
+  }
+}
+</script> -->
 <script setup>
+import { inject } from 'vue';
+
+const route = inject('route')
+const router = inject('router')
+console.log(route, router);
 
 </script>
 

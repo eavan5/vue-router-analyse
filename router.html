@@ -14,10 +14,10 @@
     // 2. 路由的核心， 我们要自己维护路径的切换，要维护跳转的状态， replace, push (状态信息：滚动条等)
     // 3. 可以注入监听方法，路径变化后，可以通知我们
 
-    function createCurrentLocation (bases = '') {
+    function createCurrentLocation (bases = '') { // 
       let { pathname, search, hash } = location
       if (bases.startsWith('#')) {
-        hash.slice(1) || '/'
+        return hash.slice(1) || '/'
       }
       return pathname + search + hash
     }
@@ -46,7 +46,7 @@
         currentState.value = state
       }
 
-      if (!currentState.value) { // 发生跳转初始化存入状态
+      if (!currentState.value) { // 发生跳转 初始化存入状态
         changeLocation(currentLocation.value, buildState(null, currentLocation.value, null, true), true)
       }
       // console.log(currentLocation.value, currentState.value, history.state);
