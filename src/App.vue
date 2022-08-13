@@ -12,7 +12,6 @@ import { inject } from 'vue';
 
 const route = inject('route')
 const router = inject('router')
-console.log(route, router);
 
 </script>
 

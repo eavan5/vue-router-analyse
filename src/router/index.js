@@ -10,10 +10,6 @@ const routes = [
 		children: [
 			{
 				path: 'a',
-				// components: {
-				//   footer
-				//   home
-				// },
 				component: {
 					render() {
 						return h('div', 'a')
@@ -52,6 +48,27 @@ const routes = [
 const router = createRouter({
 	routes,
 	history: createWebHistory(),
+})
+
+router.beforeEach((to, from, next) => {
+	// setTimeout(() => {
+	// 	console.log('beforeEach')
+	// 	next()
+	// }, 200)
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			console.log('beforeEach Promise')
+			resolve()
+		}, 200)
+	})
+})
+
+router.afterEach((to, from) => {
+	console.log('afterEach')
+})
+
+router.beforeResolve((to, from) => {
+	console.log('beforeResolve')
 })
 
 export default router

@@ -5,6 +5,16 @@
   <router-view></router-view>
 </template>
 
-<script setup lang='ts'>
-import { ref } from 'vue'
+<script>
+export default {
+  beforeRouteEnter () {
+    console.log('beforeRouteEnter进入前');
+  },
+  beforeRouteUpdate () {
+    console.log('beforeRouteUpdate更新前');
+  },
+  beforeRouteLeave () {
+    console.log('beforeRouteLeave离开前');
+  }
+}
 </script>
